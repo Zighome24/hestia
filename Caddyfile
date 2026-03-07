@@ -1,0 +1,20 @@
+{
+    # Global options
+    admin off
+}
+
+:80 {
+    # Serve static frontend
+    root * /srv
+    try_files {path} /200.html
+
+    # Proxy API requests to backend
+    handle /api/* {
+        reverse_proxy api:8080
+    }
+
+    # Serve static files with fallback for SPA
+    handle {
+        file_server
+    }
+}

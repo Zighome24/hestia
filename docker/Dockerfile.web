@@ -1,0 +1,19 @@
+# Stage 1: Build
+FROM node:20-slim AS builder
+
+WORKDIR /app
+
+COPY web/package.json ./
+COPY web/package-lock.json* ./
+
+RUN npm ci
+
+COPY web/ ./
+
+RUN npm run build
+
+# Stage 2: Runtime
+FROM caddy:2-alpine
+
+COPY --from=builder /app/build /srv
+COPY Caddyfile /etc/caddy/Caddyfile
