@@ -21,3 +21,8 @@ chrono = { version = "0.4", features = ["serde"] }
 tower-sessions = "0.13"
 tower-sessions-sqlx-store = { version = "0.14", features = ["postgres"] }
 anyhow = "1"
+
+[dev-dependencies]
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["full", "test-util"] }
+tower = { version = "0.5", features = ["util"] }

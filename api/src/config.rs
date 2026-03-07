@@ -35,3 +35,69 @@ impl Config {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env;
+
+    #[test]
+    fn test_from_env_with_all_vars() {
+        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
+        env::set_var("SESSION_SECRET", "test-secret-key");
+        env::set_var("PORT", "3000");
+        env::set_var("STORAGE_PATH", "/tmp/uploads");
+
+        let config = Config::from_env().unwrap();
+        assert_eq!(config.database_url, "postgres://test:test@localhost/test");
+        assert_eq!(config.session_secret, "test-secret-key");
+        assert_eq!(config.port, 3000);
+        assert_eq!(config.storage_path, "/tmp/uploads");
+
+        // Cleanup
+        env::remove_var("PORT");
+        env::remove_var("STORAGE_PATH");
+    }
+
+    #[test]
+    fn test_from_env_defaults() {
+        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
+        env::set_var("SESSION_SECRET", "test-secret");
+        env::remove_var("PORT");
+        env::remove_var("STORAGE_PATH");
+
+        let config = Config::from_env().unwrap();
+        assert_eq!(config.port, 8080);
+        assert_eq!(config.storage_path, "./uploads");
+    }
+
+    #[test]
+    fn test_from_env_missing_database_url() {
+        env::remove_var("DATABASE_URL");
+        env::set_var("SESSION_SECRET", "test-secret");
+
+        let result = Config::from_env();
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_from_env_missing_session_secret() {
+        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
+        env::remove_var("SESSION_SECRET");
+
+        let result = Config::from_env();
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_from_env_invalid_port() {
+        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
+        env::set_var("SESSION_SECRET", "test-secret");
+        env::set_var("PORT", "not_a_number");
+
+        let result = Config::from_env();
+        assert!(result.is_err());
+
+        env::remove_var("PORT");
+    }
+}
