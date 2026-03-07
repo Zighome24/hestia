@@ -129,12 +129,15 @@ The goal is a working app where both users can log in, upload receipt photos, re
 
 ### Milestone 1.1 — Project Scaffolding
 
-- [ ] Initialize Rust project with Axum, sqlx, tokio
-- [ ] Initialize SvelteKit project with static adapter
-- [ ] Docker Compose with Postgres, Caddy, API container
-- [ ] Basic health check endpoint (`GET /api/health`)
-- [ ] Database connection and migration setup
-- [ ] CI: cargo check, cargo test, clippy, svelte build
+- [x] Initialize Rust project with Axum, sqlx, tokio
+- [x] Initialize SvelteKit project with static adapter
+- [x] Docker Compose with Postgres, Caddy, API container
+- [x] Basic health check endpoint (`GET /api/health`)
+- [x] Database connection and migration setup (pool + `sqlx::migrate!`; migration files added per milestone)
+- [x] CI: cargo check, cargo test, clippy, svelte check, svelte build
+- [ ] Vitest setup in web/ with `@testing-library/svelte`
+- [ ] Integration test: health check endpoint returns `{"status": "ok"}`
+- [ ] Unit tests: config parsing (valid env, missing vars, defaults)
 
 ### Milestone 1.2 — Authentication
 
@@ -146,6 +149,10 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - [ ] Auth middleware for protected routes
 - [ ] Frontend: login page, registration page, session management
 - [ ] Seed script or admin CLI to create initial user accounts
+- [ ] Unit tests: password hashing/verification, session token generation
+- [ ] Integration tests: register → login → access protected route → logout
+- [ ] Integration tests: unauthenticated requests get 401
+- [ ] Frontend tests: login form renders and validates
 
 ### Milestone 1.3 — Credit Card Management
 
@@ -153,6 +160,10 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - [ ] CRUD API endpoints for cards
 - [ ] Frontend: settings page to add/edit/remove cards
 - [ ] Cards are per-user (each user manages their own list)
+- [ ] Integration tests: card CRUD lifecycle (create, read, update, delete)
+- [ ] Integration tests: cards scoped to authenticated user
+- [ ] Unit tests: card validation (last_four format, required fields)
+- [ ] Frontend tests: card management form renders and validates
 
 ### Milestone 1.4 — Receipt Upload & Management
 
@@ -169,6 +180,13 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - [ ] Frontend: category/tag management UI
 - [ ] Mobile-optimized upload UX (camera capture via `accept="image/*" capture="environment"`)
 - [ ] All receipts visible to all users (shared family view)
+- [ ] Integration tests: receipt CRUD lifecycle (create with photo, read, update, delete)
+- [ ] Integration tests: file upload validation (valid JPEG/PNG accepted, oversized/wrong-type rejected)
+- [ ] Integration tests: category/tag CRUD and assignment to receipts
+- [ ] Integration tests: photo retrieval requires authentication
+- [ ] Unit tests: storage file naming, content-type validation
+- [ ] Frontend tests: receipt upload form renders required fields and validates
+- [ ] Frontend tests: receipt list renders and filters correctly
 
 ### Milestone 1.5 — Polish & Deploy
 
@@ -211,6 +229,58 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - Spending trends by card, category, time period
 - Semantic search across receipts (pgvector)
 - Budget tracking and alerts
+
+---
+
+## Testing Strategy
+
+### Backend (Rust)
+
+- **Framework**: Built-in `#[tokio::test]` + `axum::test` helpers
+- **Unit tests**: Co-located in each module (`#[cfg(test)] mod tests`)
+  - Model layer: query builders, validation logic, error mapping
+  - Auth: password hashing/verification, session token generation, WebAuthn challenge construction
+  - Storage: file naming, path resolution, content-type validation
+  - Config: env parsing, defaults, missing-var errors
+- **Integration tests**: `api/tests/` directory, each test spins up a real test server + Postgres
+  - Health check returns 200
+  - Auth flows: register → login → access protected route → logout
+  - CRUD lifecycle for cards, receipts, categories/tags
+  - File upload: valid image accepted, oversized/wrong-type rejected
+  - Auth middleware: unauthenticated requests get 401, wrong-user access gets 403
+  - Error responses: 404 for missing resources, 400 for invalid input, proper JSON shape
+- **Database**: Use a dedicated test database (e.g., `hestia_test`), run migrations before each test suite, wrap each test in a transaction that rolls back
+- **Test utilities**: Shared helpers in `api/tests/common/` for creating test users, authenticated clients, and seeding data
+
+### Frontend (SvelteKit)
+
+- **Framework**: Vitest + `@testing-library/svelte`
+- **Unit tests**: `web/src/lib/**/*.test.ts`
+  - API client: mock fetch, verify correct URL/method/headers, error handling for non-2xx
+  - Auth helpers: WebAuthn credential formatting, challenge encoding
+- **Component tests**: `web/src/routes/**/*.test.ts`
+  - Key forms render required fields (login, receipt upload, card management)
+  - Form validation: required fields, amount format, file type restrictions
+  - Navigation: layout renders nav links, active state
+- **No E2E tests in Phase 1** — deferred to Phase 2 (Playwright)
+
+### CI Requirements
+
+- All backend tests must pass (`cargo test`)
+- All frontend tests must pass (`npm run test`)
+- Clippy clean (`cargo clippy -- -D warnings`)
+- SvelteKit type check passes (`npm run check`)
+- SvelteKit build succeeds (`npm run build`)
+
+### Per-Milestone Test Requirements
+
+Each milestone's tasks include writing tests for the functionality introduced. Specifically:
+
+- **Milestone 1.1**: Health check integration test, config unit tests
+- **Milestone 1.2**: Auth unit tests (password hashing, session management), auth integration tests (register, login, logout, middleware rejection)
+- **Milestone 1.3**: Card CRUD integration tests, card validation unit tests
+- **Milestone 1.4**: Receipt CRUD integration tests, file upload integration tests (valid/invalid), category CRUD integration tests, storage unit tests
+- **Milestone 1.5**: No new tests — focus on manual QA and responsive testing
 
 ---
 
