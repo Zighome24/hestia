@@ -1,0 +1,5 @@
+/Users/ziegs/code/hestia/.claude/worktrees/agent-af28db3e/api/target/debug/deps/webpki_roots-f6d0ac6d8597f704.d: /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webpki-roots-1.0.6/src/lib.rs
+
+/Users/ziegs/code/hestia/.claude/worktrees/agent-af28db3e/api/target/debug/deps/libwebpki_roots-f6d0ac6d8597f704.rmeta: /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webpki-roots-1.0.6/src/lib.rs
+
+/Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webpki-roots-1.0.6/src/lib.rs:

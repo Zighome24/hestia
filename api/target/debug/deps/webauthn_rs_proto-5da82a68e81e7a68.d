@@ -1,0 +1,10 @@
+/Users/ziegs/code/hestia/.claude/worktrees/agent-af28db3e/api/target/debug/deps/webauthn_rs_proto-5da82a68e81e7a68.d: /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/lib.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/attest.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/auth.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/cose.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/extensions.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/options.rs
+
+/Users/ziegs/code/hestia/.claude/worktrees/agent-af28db3e/api/target/debug/deps/libwebauthn_rs_proto-5da82a68e81e7a68.rmeta: /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/lib.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/attest.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/auth.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/cose.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/extensions.rs /Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/options.rs
+
+/Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/lib.rs:
+/Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/attest.rs:
+/Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/auth.rs:
+/Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/cose.rs:
+/Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/extensions.rs:
+/Users/ziegs/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/webauthn-rs-proto-0.5.4/src/options.rs:
