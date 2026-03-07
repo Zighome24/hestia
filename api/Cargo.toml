@@ -23,6 +23,15 @@ tower-sessions-sqlx-store = { version = "0.14", features = ["postgres"] }
 anyhow = "1"
 
 [dev-dependencies]
-reqwest = { version = "0.12", features = ["json"] }
+reqwest = { version = "0.12", features = ["json", "cookies"] }
 tokio = { version = "1", features = ["full", "test-util"] }
 tower = { version = "0.5", features = ["util"] }
+dotenvy = "0.15"
+
+[[bin]]
+name = "hestia-api"
+path = "src/main.rs"
+
+[[bin]]
+name = "seed"
+path = "src/bin/seed.rs"

@@ -5,16 +5,12 @@ mod models;
 mod routes;
 mod storage;
 
-use axum::{
-    routing::get,
-    Json, Router,
-};
+use axum::{routing::get, Json, Router};
 use serde_json::json;
 use sqlx::postgres::PgPoolOptions;
-use tower_http::{
-    cors::CorsLayer,
-    trace::TraceLayer,
-};
+use tower_http::{cors::CorsLayer, trace::TraceLayer};
+use tower_sessions::SessionManagerLayer;
+use tower_sessions_sqlx_store::PostgresStore;
 use tracing::info;
 
 #[tokio::main]
@@ -37,13 +33,24 @@ async fn main() -> anyhow::Result<()> {
     info!("running migrations");
     sqlx::migrate!("./migrations").run(&pool).await?;
 
+    // Set up session store
+    let session_store = PostgresStore::new(pool.clone());
+    session_store.migrate().await?;
+
+    let session_layer = SessionManagerLayer::new(session_store)
+        .with_secure(false) // Set to true in production with HTTPS
+        .with_http_only(true)
+        .with_same_site(tower_sessions::cookie::SameSite::Lax);
+
     let app = Router::new()
         .route("/api/health", get(health_handler))
         .nest("/api/auth", routes::auth::router())
         .nest("/api/receipts", routes::receipts::router())
         .nest("/api/cards", routes::cards::router())
+        .layer(session_layer)
         .layer(CorsLayer::permissive())
-        .layer(TraceLayer::new_for_http());
+        .layer(TraceLayer::new_for_http())
+        .with_state(pool);
 
     let addr = format!("0.0.0.0:{}", config.port);
     info!("listening on {}", addr);
@@ -67,8 +74,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_health_endpoint() {
-        let app = Router::new()
-            .route("/api/health", get(health_handler));
+        let app = Router::new().route("/api/health", get(health_handler));
 
         let response = app
             .oneshot(
@@ -82,7 +88,9 @@ mod tests {
 
         assert_eq!(response.status(), StatusCode::OK);
 
-        let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
         let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert_eq!(json, serde_json::json!({"status": "ok"}));
     }

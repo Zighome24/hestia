@@ -135,24 +135,24 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - [x] Basic health check endpoint (`GET /api/health`)
 - [x] Database connection and migration setup (pool + `sqlx::migrate!`; migration files added per milestone)
 - [x] CI: cargo check, cargo test, clippy, svelte check, svelte build
-- [ ] Vitest setup in web/ with `@testing-library/svelte`
-- [ ] Integration test: health check endpoint returns `{"status": "ok"}`
-- [ ] Unit tests: config parsing (valid env, missing vars, defaults)
+- [x] Vitest setup in web/ with `@testing-library/svelte`
+- [x] Integration test: health check endpoint returns `{"status": "ok"}`
+- [x] Unit tests: config parsing (valid env, missing vars, defaults)
 
 ### Milestone 1.2 — Authentication
 
-- [ ] User model and migration (id, username, display_name, password_hash, created_at)
-- [ ] WebAuthn credential storage (user_id, credential_id, public_key, etc.)
-- [ ] Registration flow: username + password + passkey registration
-- [ ] Login flow: passkey challenge/response with password fallback
-- [ ] Server-side session management with secure cookies
-- [ ] Auth middleware for protected routes
-- [ ] Frontend: login page, registration page, session management
-- [ ] Seed script or admin CLI to create initial user accounts
-- [ ] Unit tests: password hashing/verification, session token generation
-- [ ] Integration tests: register → login → access protected route → logout
-- [ ] Integration tests: unauthenticated requests get 401
-- [ ] Frontend tests: login form renders and validates
+- [x] User model and migration (id, username, display_name, password_hash, created_at)
+- [x] WebAuthn credential storage (user_id, credential_id, public_key, etc.)
+- [x] Registration flow: username + password + passkey registration
+- [x] Login flow: passkey challenge/response with password fallback
+- [x] Server-side session management with secure cookies
+- [x] Auth middleware for protected routes
+- [x] Frontend: login page, registration page, session management
+- [x] Seed script or admin CLI to create initial user accounts
+- [x] Unit tests: password hashing/verification, session token generation
+- [x] Integration tests: register → login → access protected route → logout
+- [x] Integration tests: unauthenticated requests get 401
+- [x] Frontend tests: login form renders and validates
 
 ### Milestone 1.3 — Credit Card Management
 

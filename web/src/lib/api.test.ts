@@ -21,7 +21,8 @@ describe('API client', () => {
 
 		expect(fetch).toHaveBeenCalledWith('/api/health', {
 			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include'
 		});
 		expect(result).toEqual(mockResponse);
 	});
@@ -43,6 +44,7 @@ describe('API client', () => {
 		expect(fetch).toHaveBeenCalledWith('/api/auth/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include',
 			body: JSON.stringify(body)
 		});
 		expect(result).toEqual(mockResponse);
@@ -65,6 +67,7 @@ describe('API client', () => {
 		expect(fetch).toHaveBeenCalledWith('/api/cards/1', {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include',
 			body: JSON.stringify(body)
 		});
 		expect(result).toEqual(mockResponse);
@@ -84,7 +87,8 @@ describe('API client', () => {
 
 		expect(fetch).toHaveBeenCalledWith('/api/cards/1', {
 			method: 'DELETE',
-			headers: { 'Content-Type': 'application/json' }
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include'
 		});
 	});
 

@@ -1,13 +1,33 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { currentUser, checkAuth, logout } from '$lib/auth';
+	import { goto } from '$app/navigation';
+
+	onMount(() => {
+		checkAuth();
+	});
+
+	async function handleLogout() {
+		await logout();
+		goto('/login');
+	}
 </script>
 
 <div class="app">
 	<nav class="nav">
 		<a href="/" class="nav-brand">Hestia</a>
 		<ul class="nav-links">
-			<li><a href="/">Home</a></li>
-			<li><a href="/receipts">Receipts</a></li>
-			<li><a href="/settings/cards">Settings</a></li>
+			{#if $currentUser}
+				<li><a href="/">Home</a></li>
+				<li><a href="/receipts">Receipts</a></li>
+				<li><a href="/settings/cards">Settings</a></li>
+				<li>
+					<button class="nav-logout" on:click={handleLogout}>Logout</button>
+				</li>
+			{:else}
+				<li><a href="/login">Login</a></li>
+				<li><a href="/register">Register</a></li>
+			{/if}
 		</ul>
 	</nav>
 
@@ -71,6 +91,7 @@
 		display: flex;
 		list-style: none;
 		gap: 1.25rem;
+		align-items: center;
 	}
 
 	.nav-links a {
@@ -81,6 +102,19 @@
 	.nav-links a:hover {
 		color: white;
 		text-decoration: none;
+	}
+
+	.nav-logout {
+		background: none;
+		border: none;
+		color: #bfdbfe;
+		font-size: 0.95rem;
+		cursor: pointer;
+		padding: 0;
+	}
+
+	.nav-logout:hover {
+		color: white;
 	}
 
 	.main {

@@ -1,43 +1,54 @@
 <script lang="ts">
-	import { login } from '$lib/auth';
+	import { register } from '$lib/auth';
 	import { goto } from '$app/navigation';
 
 	let username = '';
+	let displayName = '';
 	let password = '';
+	let confirmPassword = '';
 	let error = '';
 	let loading = false;
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		error = '';
+
+		if (password !== confirmPassword) {
+			error = 'Passwords do not match';
+			return;
+		}
+		if (password.length < 8) {
+			error = 'Password must be at least 8 characters';
+			return;
+		}
+
 		loading = true;
 		try {
-			await login(username, password);
+			await register(username, displayName, password);
 			goto('/');
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Login failed';
+			error = err instanceof Error ? err.message : 'Registration failed';
 		} finally {
 			loading = false;
 		}
 	}
 </script>
 
-<h1>Login</h1>
+<h1>Register</h1>
 
 {#if error}
 	<p class="error" role="alert">{error}</p>
 {/if}
 
-<form class="login-form" on:submit={handleSubmit}>
+<form class="register-form" on:submit={handleSubmit}>
 	<div class="field">
 		<label for="username">Username</label>
-		<input
-			id="username"
-			type="text"
-			bind:value={username}
-			autocomplete="username"
-			required
-		/>
+		<input id="username" type="text" bind:value={username} autocomplete="username" required />
+	</div>
+
+	<div class="field">
+		<label for="display-name">Display Name</label>
+		<input id="display-name" type="text" bind:value={displayName} required />
 	</div>
 
 	<div class="field">
@@ -46,17 +57,28 @@
 			id="password"
 			type="password"
 			bind:value={password}
-			autocomplete="current-password"
+			autocomplete="new-password"
+			required
+		/>
+	</div>
+
+	<div class="field">
+		<label for="confirm-password">Confirm Password</label>
+		<input
+			id="confirm-password"
+			type="password"
+			bind:value={confirmPassword}
+			autocomplete="new-password"
 			required
 		/>
 	</div>
 
 	<button type="submit" class="btn-primary" disabled={loading}>
-		{loading ? 'Signing in...' : 'Sign In'}
+		{loading ? 'Creating account...' : 'Create Account'}
 	</button>
 
-	<p class="register-link">
-		Don't have an account? <a href="/register">Register</a>
+	<p class="login-link">
+		Already have an account? <a href="/login">Sign in</a>
 	</p>
 </form>
 
@@ -65,7 +87,7 @@
 		margin-bottom: 1.5rem;
 	}
 
-	.login-form {
+	.register-form {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -124,7 +146,7 @@
 		margin-bottom: 0.5rem;
 	}
 
-	.register-link {
+	.login-link {
 		margin-top: 0.5rem;
 		font-size: 0.875rem;
 		color: #6b7280;

@@ -99,6 +99,12 @@ setup:
     cd web && npm install
     @echo "Setup complete! Run 'just db' to start Postgres, then 'just dev-api' and 'just dev-web'."
 
+# --- Admin ---
+
+# Create a user account (requires Postgres running)
+seed username display_name password:
+    cd api && cargo run --bin seed -- --username {{ username }} --display-name "{{ display_name }}" --password "{{ password }}"
+
 # --- Cleanup ---
 
 # Clean all build artifacts

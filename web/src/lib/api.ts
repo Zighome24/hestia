@@ -7,7 +7,8 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 		method,
 		headers: {
 			'Content-Type': 'application/json'
-		}
+		},
+		credentials: 'include'
 	};
 
 	if (body !== undefined) {
