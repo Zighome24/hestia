@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { get, post, put, del } from '$lib/api';
+	import Spinner from '$lib/components/Spinner.svelte';
+	import ErrorBanner from '$lib/components/ErrorBanner.svelte';
 
 	interface Card {
 		id: string;
@@ -130,13 +132,13 @@
 <h1>Credit Cards</h1>
 
 {#if error}
-	<p class="error" role="alert">{error}</p>
+	<ErrorBanner message={error} on:dismiss={() => (error = '')} />
 {/if}
 
 <section class="add-section">
 	<h2>Add Card</h2>
 	{#if addError}
-		<p class="error" role="alert">{addError}</p>
+		<ErrorBanner message={addError} on:dismiss={() => (addError = '')} />
 	{/if}
 	<form class="card-form" on:submit={handleAdd}>
 		<div class="field">
@@ -156,7 +158,7 @@
 <section class="cards-section">
 	<h2>Your Cards</h2>
 	{#if loading}
-		<p>Loading...</p>
+		<Spinner message="Loading cards..." />
 	{:else if cards.length === 0}
 		<p class="empty">No cards yet. Add one above.</p>
 	{:else}
@@ -165,7 +167,7 @@
 				<li class="card-item">
 					{#if editingId === card.id}
 						{#if editError}
-							<p class="error" role="alert">{editError}</p>
+							<ErrorBanner message={editError} on:dismiss={() => (editError = '')} />
 						{/if}
 						<form class="card-form inline" on:submit={handleEdit}>
 							<div class="field">
@@ -228,10 +230,11 @@
 	}
 
 	input {
-		padding: 0.4rem 0.6rem;
+		padding: 0.5rem 0.6rem;
 		border: 1px solid #d1d5db;
 		border-radius: 0.375rem;
 		font-size: 0.95rem;
+		min-height: 2.5rem;
 	}
 
 	input:focus {
@@ -274,23 +277,62 @@
 	}
 
 	.btn-primary {
-		padding: 0.4rem 1rem;
+		padding: 0.5rem 1rem;
 		background: #2563eb;
 		color: white;
 		border: none;
 		border-radius: 0.375rem;
 		font-size: 0.9rem;
 		cursor: pointer;
+		min-height: 2.75rem;
 	}
 	.btn-primary:hover { background: #1d4ed8; }
 	.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-	.btn-small { padding: 0.3rem 0.7rem; font-size: 0.85rem; border-radius: 0.3rem; cursor: pointer; }
+	.btn-small {
+		padding: 0.4rem 0.75rem;
+		font-size: 0.85rem;
+		border-radius: 0.3rem;
+		cursor: pointer;
+		min-height: 2.75rem;
+	}
 	.btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
 	.btn-secondary:hover { background: #e5e7eb; }
 	.btn-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
 	.btn-danger:hover { background: #fecaca; }
 
-	.error { color: #dc2626; font-size: 0.9rem; margin-bottom: 0.5rem; }
 	.empty { color: #6b7280; font-style: italic; }
+
+	@media (max-width: 640px) {
+		.card-form {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.card-form .field {
+			width: 100%;
+		}
+
+		.card-form input {
+			width: 100%;
+		}
+
+		.card-item {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.card-info {
+			width: 100%;
+		}
+
+		.card-actions {
+			width: 100%;
+		}
+
+		.card-actions .btn-small {
+			flex: 1;
+			justify-content: center;
+		}
+	}
 </style>

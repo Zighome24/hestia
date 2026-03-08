@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { login } from '$lib/auth';
 	import { goto } from '$app/navigation';
+	import ErrorBanner from '$lib/components/ErrorBanner.svelte';
 
 	let username = '';
 	let password = '';
@@ -22,45 +23,56 @@
 	}
 </script>
 
-<h1>Login</h1>
+<div class="page-center">
+	<h1>Login</h1>
 
-{#if error}
-	<p class="error" role="alert">{error}</p>
-{/if}
+	{#if error}
+		<ErrorBanner message={error} on:dismiss={() => (error = '')} />
+	{/if}
 
-<form class="login-form" on:submit={handleSubmit}>
-	<div class="field">
-		<label for="username">Username</label>
-		<input
-			id="username"
-			type="text"
-			bind:value={username}
-			autocomplete="username"
-			required
-		/>
-	</div>
+	<form class="login-form" on:submit={handleSubmit}>
+		<div class="field">
+			<label for="username">Username</label>
+			<input
+				id="username"
+				type="text"
+				bind:value={username}
+				autocomplete="username"
+				required
+			/>
+		</div>
 
-	<div class="field">
-		<label for="password">Password</label>
-		<input
-			id="password"
-			type="password"
-			bind:value={password}
-			autocomplete="current-password"
-			required
-		/>
-	</div>
+		<div class="field">
+			<label for="password">Password</label>
+			<input
+				id="password"
+				type="password"
+				bind:value={password}
+				autocomplete="current-password"
+				required
+			/>
+		</div>
 
-	<button type="submit" class="btn-primary" disabled={loading}>
-		{loading ? 'Signing in...' : 'Sign In'}
-	</button>
+		<button type="submit" class="btn-primary" disabled={loading}>
+			{#if loading}
+				Signing in...
+			{:else}
+				Sign In
+			{/if}
+		</button>
 
-	<p class="register-link">
-		Don't have an account? <a href="/register">Register</a>
-	</p>
-</form>
+		<p class="register-link">
+			Don't have an account? <a href="/register">Register</a>
+		</p>
+	</form>
+</div>
 
 <style>
+	.page-center {
+		max-width: 24rem;
+		margin: 0 auto;
+	}
+
 	h1 {
 		margin-bottom: 1.5rem;
 	}
@@ -69,7 +81,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		max-width: 24rem;
 	}
 
 	.field {
@@ -90,6 +101,7 @@
 		border-radius: 0.375rem;
 		font-size: 1rem;
 		width: 100%;
+		min-height: 2.75rem;
 	}
 
 	input:focus {
@@ -108,6 +120,8 @@
 		font-size: 1rem;
 		font-weight: 500;
 		cursor: pointer;
+		min-height: 2.75rem;
+		justify-content: center;
 	}
 
 	.btn-primary:hover {
@@ -119,14 +133,15 @@
 		cursor: not-allowed;
 	}
 
-	.error {
-		color: #dc2626;
-		margin-bottom: 0.5rem;
-	}
-
 	.register-link {
 		margin-top: 0.5rem;
 		font-size: 0.875rem;
 		color: #6b7280;
+	}
+
+	@media (max-width: 640px) {
+		.page-center {
+			max-width: 100%;
+		}
 	}
 </style>

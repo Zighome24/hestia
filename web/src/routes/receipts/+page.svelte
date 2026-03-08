@@ -128,17 +128,17 @@
 {/if}
 
 <style>
-	.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-	.btn-primary { padding: 0.5rem 1rem; background: #2563eb; color: white; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 500; }
+	.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; gap: 0.75rem; flex-wrap: wrap; }
+	.btn-primary { padding: 0.5rem 1rem; background: #2563eb; color: white; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 500; min-height: 2.75rem; }
 	.btn-primary:hover { background: #1d4ed8; text-decoration: none; }
 	.filters { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
-	select { padding: 0.4rem 0.6rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.9rem; }
-	.btn-small { padding: 0.4rem 0.75rem; font-size: 0.85rem; border-radius: 0.3rem; cursor: pointer; }
+	select { padding: 0.4rem 0.6rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.9rem; min-height: 2.5rem; }
+	.btn-small { padding: 0.4rem 0.75rem; font-size: 0.85rem; border-radius: 0.3rem; cursor: pointer; min-height: 2.75rem; }
 	.btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
 	.btn-secondary:hover { background: #e5e7eb; }
 	.receipt-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 	.receipt-item { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
-	.receipt-link { display: block; padding: 0.75rem 1rem; color: inherit; text-decoration: none; }
+	.receipt-link { display: block; padding: 0.75rem 1rem; color: inherit; text-decoration: none; min-height: unset; }
 	.receipt-link:hover { background: #f9fafb; text-decoration: none; }
 	.receipt-main { display: flex; justify-content: space-between; align-items: center; }
 	.receipt-date { font-size: 0.9rem; color: #374151; }
@@ -151,4 +151,9 @@
 	.receipt-notes { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	.empty { color: #6b7280; text-align: center; padding: 2rem 0; }
 	.error { color: #dc2626; }
+
+	@media (max-width: 640px) {
+		.filters { flex-direction: column; }
+		select, .btn-small { width: 100%; }
+	}
 </style>

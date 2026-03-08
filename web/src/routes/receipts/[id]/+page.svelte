@@ -117,8 +117,14 @@
 	.detail-value { color: #111827; }
 	.categories { display: flex; gap: 0.35rem; flex-wrap: wrap; }
 	.category-badge { font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 1rem; }
-	.btn-danger { padding: 0.4rem 0.8rem; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 0.375rem; cursor: pointer; font-size: 0.9rem; }
+	.btn-danger { padding: 0.4rem 0.8rem; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 0.375rem; cursor: pointer; font-size: 0.9rem; min-height: 2.75rem; }
 	.btn-danger:hover { background: #fecaca; }
 	.back-link { display: inline-block; margin-top: 1.5rem; font-size: 0.9rem; }
 	.error { color: #dc2626; }
+
+	@media (max-width: 640px) {
+		.detail-row { flex-direction: column; gap: 0.25rem; }
+		.detail-label { min-width: unset; }
+		.receipt-photo { max-height: none; }
+	}
 </style>
