@@ -156,14 +156,14 @@ The goal is a working app where both users can log in, upload receipt photos, re
 
 ### Milestone 1.3 — Credit Card Management
 
-- [ ] Card model and migration (id, user_id, nickname, last_four, created_at)
-- [ ] CRUD API endpoints for cards
-- [ ] Frontend: settings page to add/edit/remove cards
-- [ ] Cards are per-user (each user manages their own list)
-- [ ] Integration tests: card CRUD lifecycle (create, read, update, delete)
-- [ ] Integration tests: cards scoped to authenticated user
-- [ ] Unit tests: card validation (last_four format, required fields)
-- [ ] Frontend tests: card management form renders and validates
+- [x] Card model and migration (id, user_id, nickname, last_four, created_at)
+- [x] CRUD API endpoints for cards
+- [x] Frontend: settings page to add/edit/remove cards
+- [x] Cards are per-user (each user manages their own list)
+- [x] Integration tests: card CRUD lifecycle (create, read, update, delete)
+- [x] Integration tests: cards scoped to authenticated user
+- [x] Unit tests: card validation (last_four format, required fields)
+- [x] Frontend tests: card management form renders and validates
 
 ### Milestone 1.4 — Receipt Upload & Management
 

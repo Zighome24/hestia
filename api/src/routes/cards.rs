@@ -29,8 +29,8 @@ async fn create_card(
     AuthUser(user): AuthUser,
     Json(req): Json<CreateCardRequest>,
 ) -> Result<Json<CardResponse>, AppError> {
-    Card::validate_nickname(&req.nickname).map_err(|e| AppError::BadRequest(e))?;
-    Card::validate_last_four(&req.last_four).map_err(|e| AppError::BadRequest(e))?;
+    Card::validate_nickname(&req.nickname).map_err(AppError::BadRequest)?;
+    Card::validate_last_four(&req.last_four).map_err(AppError::BadRequest)?;
 
     let card = Card::create(&pool, user.id, &req.nickname, &req.last_four).await?;
     Ok(Json(card.into()))
@@ -59,10 +59,10 @@ async fn update_card(
     Json(req): Json<UpdateCardRequest>,
 ) -> Result<Json<CardResponse>, AppError> {
     if let Some(ref nickname) = req.nickname {
-        Card::validate_nickname(nickname).map_err(|e| AppError::BadRequest(e))?;
+        Card::validate_nickname(nickname).map_err(AppError::BadRequest)?;
     }
     if let Some(ref last_four) = req.last_four {
-        Card::validate_last_four(last_four).map_err(|e| AppError::BadRequest(e))?;
+        Card::validate_last_four(last_four).map_err(AppError::BadRequest)?;
     }
 
     let card = Card::update(
