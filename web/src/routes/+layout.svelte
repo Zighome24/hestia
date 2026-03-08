@@ -21,6 +21,7 @@
 				<li><a href="/">Home</a></li>
 				<li><a href="/receipts">Receipts</a></li>
 				<li><a href="/settings/cards">Settings</a></li>
+				<li><a href="/settings/categories">Categories</a></li>
 				<li>
 					<button class="nav-logout" on:click={handleLogout}>Logout</button>
 				</li>

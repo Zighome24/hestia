@@ -40,15 +40,19 @@ Hestia is a self-hosted family utility application. The long-term vision include
 - **Sessions**: Server-side sessions with secure cookies
 - **Users**: Multi-user with per-user data isolation where appropriate (e.g., "who uploaded this receipt")
 
-### Deployment: Docker Compose on Proxmox LXC
+### Deployment: Podman Quadlets on Proxmox LXC
 
 - **Host**: Debian LXC on Proxmox
+- **Container runtime**: Podman (root), managed via systemd quadlet files
+- **Image registry**: `ghcr.io/Zighome24` — CI pushes images, LXC pulls them
 - **Networking**: Tailscale for device access (no public internet exposure)
 - **Reverse proxy**: Caddy — auto-TLS (Tailscale HTTPS certs), static file serving, API proxying
-- **Containers**:
+- **Containers** (each a `.container` quadlet):
   - `hestia-api` — Rust binary in distroless image
   - `postgres` — PostgreSQL 16 + pgvector extension
   - `caddy` — Reverse proxy + static frontend serving
+- **Data**: Bind mounts under `/var/lib/hestia/` (postgres, uploads, caddy) for straightforward backups
+- **Local dev**: Docker Compose (`docker/docker-compose.yml`) retained for local development and testing — works with both Docker and `podman compose`
 
 ### Security Considerations
 
@@ -113,7 +117,13 @@ hestia/
 │   ├── static/
 │   ├── svelte.config.js
 │   └── package.json
-├── docker/
+├── deploy/                   # Production deployment (Podman quadlets)
+│   ├── hestia.network        # Podman network for inter-container comms
+│   ├── hestia-api.container  # API container quadlet
+│   ├── hestia-postgres.container
+│   ├── hestia-caddy.container
+│   └── hestia-api.env        # Production environment variables (not committed)
+├── docker/                   # Local development
 │   ├── Dockerfile.api
 │   ├── Dockerfile.web        # Multi-stage: build + copy to Caddy
 │   └── docker-compose.yml
@@ -167,26 +177,26 @@ The goal is a working app where both users can log in, upload receipt photos, re
 
 ### Milestone 1.4 — Receipt Upload & Management
 
-- [ ] Receipt model and migration (id, user_id, card_id, total_amount, photo_path, notes, purchased_at, created_at)
-- [ ] Category/tag model and migration (id, name, color, created_at; receipt_tags join table)
-- [ ] Photo upload endpoint with file validation (JPEG/PNG, size limit)
-- [ ] Receipt CRUD API endpoints (include category/tag assignment)
-- [ ] Category/tag CRUD API endpoints
-- [ ] Photo storage on local filesystem with unique naming
-- [ ] Photo retrieval endpoint (serves stored images, auth-gated)
-- [ ] Frontend: receipt list view (sortable by date, filterable by card and category)
-- [ ] Frontend: new receipt form — camera/file input, amount, card selector, date, categories, optional notes
-- [ ] Frontend: receipt detail view with photo display
-- [ ] Frontend: category/tag management UI
-- [ ] Mobile-optimized upload UX (camera capture via `accept="image/*" capture="environment"`)
-- [ ] All receipts visible to all users (shared family view)
-- [ ] Integration tests: receipt CRUD lifecycle (create with photo, read, update, delete)
-- [ ] Integration tests: file upload validation (valid JPEG/PNG accepted, oversized/wrong-type rejected)
-- [ ] Integration tests: category/tag CRUD and assignment to receipts
-- [ ] Integration tests: photo retrieval requires authentication
-- [ ] Unit tests: storage file naming, content-type validation
-- [ ] Frontend tests: receipt upload form renders required fields and validates
-- [ ] Frontend tests: receipt list renders and filters correctly
+- [x] Receipt model and migration (id, user_id, card_id, total_amount, photo_path, notes, purchased_at, created_at)
+- [x] Category/tag model and migration (id, name, color, created_at; receipt_tags join table)
+- [x] Photo upload endpoint with file validation (JPEG/PNG, size limit)
+- [x] Receipt CRUD API endpoints (include category/tag assignment)
+- [x] Category/tag CRUD API endpoints
+- [x] Photo storage on local filesystem with unique naming
+- [x] Photo retrieval endpoint (serves stored images, auth-gated)
+- [x] Frontend: receipt list view (sortable by date, filterable by card and category)
+- [x] Frontend: new receipt form — camera/file input, amount, card selector, date, categories, optional notes
+- [x] Frontend: receipt detail view with photo display
+- [x] Frontend: category/tag management UI
+- [x] Mobile-optimized upload UX (camera capture via `accept="image/*" capture="environment"`)
+- [x] All receipts visible to all users (shared family view)
+- [x] Integration tests: receipt CRUD lifecycle (create with photo, read, update, delete)
+- [x] Integration tests: file upload validation (valid JPEG/PNG accepted, oversized/wrong-type rejected)
+- [x] Integration tests: category/tag CRUD and assignment to receipts
+- [x] Integration tests: photo retrieval requires authentication
+- [x] Unit tests: storage file naming, content-type validation
+- [x] Frontend tests: receipt upload form renders required fields and validates
+- [x] Frontend tests: receipt list renders and filters correctly
 
 ### Milestone 1.5 — Polish & Deploy
 
@@ -194,10 +204,11 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - [ ] Error handling and user-friendly error messages
 - [ ] Loading states and optimistic UI where appropriate
 - [ ] Docker production build (multi-stage Rust build, static frontend baked into Caddy image)
-- [ ] Docker Compose production config (volumes, restart policies, resource limits)
+- [ ] CI: build and push container images to `ghcr.io/Zighome24` on main branch
+- [ ] Podman quadlet files (`deploy/`) — `.container`, `.network` units for production
 - [ ] Caddy config with Tailscale HTTPS
-- [ ] Deploy to Proxmox LXC
-- [ ] Backup strategy for Postgres data and receipt photos
+- [ ] Deploy quadlets to Proxmox LXC, verify systemd starts all services on boot
+- [ ] Backup strategy for Postgres data and receipt photos (bind mounts under `/var/lib/hestia/`)
 
 ---
 

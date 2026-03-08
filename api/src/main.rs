@@ -5,6 +5,8 @@ mod models;
 mod routes;
 mod storage;
 
+use std::sync::Arc;
+
 use axum::{routing::get, Json, Router};
 use serde_json::json;
 use sqlx::postgres::PgPoolOptions;
@@ -37,6 +39,10 @@ async fn main() -> anyhow::Result<()> {
     let session_store = PostgresStore::new(pool.clone());
     session_store.migrate().await?;
 
+    let storage_path = std::env::var("STORAGE_PATH").unwrap_or_else(|_| "./uploads".to_string());
+    let storage = Arc::new(storage::LocalStorage::new(&storage_path));
+    storage.init().await?;
+
     let session_layer = SessionManagerLayer::new(session_store)
         .with_secure(false) // Set to true in production with HTTPS
         .with_http_only(true)
@@ -45,8 +51,9 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/api/health", get(health_handler))
         .nest("/api/auth", routes::auth::router())
-        .nest("/api/receipts", routes::receipts::router())
+        .nest("/api/receipts", routes::receipts::router(storage))
         .nest("/api/cards", routes::cards::router())
+        .nest("/api/categories", routes::categories::router())
         .layer(session_layer)
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())

@@ -3,6 +3,8 @@
 //! Requires a running PostgreSQL database.
 //! Set DATABASE_URL and SESSION_SECRET environment variables before running.
 
+use std::sync::Arc;
+
 use axum::{routing::get, Json, Router};
 use reqwest::Client;
 use serde_json::{json, Value};
@@ -12,6 +14,7 @@ use tower_sessions_sqlx_store::PostgresStore;
 use uuid::Uuid;
 
 use hestia_api::routes;
+use hestia_api::storage::LocalStorage;
 
 async fn spawn_app() -> (String, Client) {
     dotenvy::dotenv().ok();
@@ -30,6 +33,10 @@ async fn spawn_app() -> (String, Client) {
         .await
         .expect("Failed to run migrations");
 
+    let storage_path = format!("/tmp/hestia_test_{}", Uuid::new_v4());
+    let storage = Arc::new(LocalStorage::new(&storage_path));
+    storage.init().await.unwrap();
+
     let session_store = PostgresStore::new(pool.clone());
     session_store
         .migrate()
@@ -46,8 +53,9 @@ async fn spawn_app() -> (String, Client) {
             get(|| async { Json(json!({"status": "ok"})) }),
         )
         .nest("/api/auth", routes::auth::router())
-        .nest("/api/receipts", routes::receipts::router())
+        .nest("/api/receipts", routes::receipts::router(storage))
         .nest("/api/cards", routes::cards::router())
+        .nest("/api/categories", routes::categories::router())
         .layer(session_layer)
         .with_state(pool);
 
