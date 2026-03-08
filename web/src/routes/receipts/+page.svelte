@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { get } from '$lib/api';
+	import Spinner from '$lib/components/Spinner.svelte';
+	import ErrorBanner from '$lib/components/ErrorBanner.svelte';
 
 	interface Category { id: string; name: string; color: string; created_at: string; }
 	interface Card { id: string; user_id: string; nickname: string; last_four: string; created_at: string; }
@@ -65,11 +67,11 @@
 </div>
 
 {#if error}
-	<p class="error" role="alert">{error}</p>
+	<ErrorBanner message={error} on:dismiss={() => (error = '')} />
 {/if}
 
 {#if loading}
-	<p>Loading...</p>
+	<Spinner message="Loading receipts..." />
 {:else}
 	<div class="filters">
 		<select bind:value={filterCard} aria-label="Filter by card">
@@ -150,7 +152,6 @@
 	.category-badge { font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 1rem; }
 	.receipt-notes { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	.empty { color: #6b7280; text-align: center; padding: 2rem 0; }
-	.error { color: #dc2626; }
 
 	@media (max-width: 640px) {
 		.filters { flex-direction: column; }

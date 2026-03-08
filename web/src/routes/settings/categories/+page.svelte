@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { get, post, put, del } from '$lib/api';
+	import Spinner from '$lib/components/Spinner.svelte';
+	import ErrorBanner from '$lib/components/ErrorBanner.svelte';
 
 	interface Category { id: string; name: string; color: string; created_at: string; }
 
@@ -79,11 +81,15 @@
 
 <h1>Categories</h1>
 
-{#if error}<p class="error" role="alert">{error}</p>{/if}
+{#if error}
+	<ErrorBanner message={error} on:dismiss={() => (error = '')} />
+{/if}
 
 <section class="add-section">
 	<h2>Add Category</h2>
-	{#if addError}<p class="error" role="alert">{addError}</p>{/if}
+	{#if addError}
+		<ErrorBanner message={addError} on:dismiss={() => (addError = '')} />
+	{/if}
 	<form class="cat-form" on:submit={handleAdd}>
 		<div class="field">
 			<label for="new-name">Name</label>
@@ -100,7 +106,7 @@
 <section>
 	<h2>Your Categories</h2>
 	{#if loading}
-		<p>Loading...</p>
+		<Spinner message="Loading categories..." />
 	{:else if categories.length === 0}
 		<p class="empty">No categories yet.</p>
 	{:else}
@@ -108,7 +114,9 @@
 			{#each categories as cat (cat.id)}
 				<li class="cat-item">
 					{#if editingId === cat.id}
-						{#if editError}<p class="error">{editError}</p>{/if}
+						{#if editError}
+							<ErrorBanner message={editError} on:dismiss={() => (editError = '')} />
+						{/if}
 						<form class="cat-form" on:submit={handleEdit}>
 							<input type="text" bind:value={editName} required />
 							<input type="color" bind:value={editColor} />
@@ -138,20 +146,55 @@
 	.cat-form { display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap; }
 	.field { display: flex; flex-direction: column; gap: 0.25rem; }
 	label { font-size: 0.8rem; font-weight: 500; color: #374151; }
-	input[type="text"] { padding: 0.4rem 0.6rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.95rem; }
-	input[type="color"] { width: 3rem; height: 2rem; border: 1px solid #d1d5db; border-radius: 0.375rem; cursor: pointer; padding: 2px; }
+	input[type="text"] { padding: 0.4rem 0.6rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.95rem; min-height: 2.5rem; }
+	input[type="text"]:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
+	input[type="color"] { width: 3rem; min-height: 2.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; cursor: pointer; padding: 2px; }
 	.cat-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 	.cat-item { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; flex-wrap: wrap; gap: 0.5rem; }
 	.cat-info { display: flex; align-items: center; gap: 0.5rem; }
 	.cat-swatch { width: 1rem; height: 1rem; border-radius: 50%; border: 1px solid #d1d5db; }
 	.cat-name { font-weight: 500; }
 	.cat-actions { display: flex; gap: 0.5rem; }
-	.btn-primary { padding: 0.4rem 1rem; background: #2563eb; color: white; border: none; border-radius: 0.375rem; font-size: 0.9rem; cursor: pointer; }
+	.btn-primary { padding: 0.4rem 1rem; background: #2563eb; color: white; border: none; border-radius: 0.375rem; font-size: 0.9rem; cursor: pointer; min-height: 2.75rem; }
 	.btn-primary:hover { background: #1d4ed8; }
 	.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-	.btn-small { padding: 0.3rem 0.7rem; font-size: 0.85rem; border-radius: 0.3rem; cursor: pointer; }
+	.btn-small { padding: 0.3rem 0.7rem; font-size: 0.85rem; border-radius: 0.3rem; cursor: pointer; min-height: 2.75rem; }
 	.btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+	.btn-secondary:hover { background: #e5e7eb; }
 	.btn-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-	.error { color: #dc2626; font-size: 0.9rem; margin-bottom: 0.5rem; }
+	.btn-danger:hover { background: #fecaca; }
 	.empty { color: #6b7280; font-style: italic; }
+
+	@media (max-width: 640px) {
+		.cat-form {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.cat-form .field {
+			width: 100%;
+		}
+
+		.cat-form input[type="text"] {
+			width: 100%;
+		}
+
+		.cat-item {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.cat-info {
+			width: 100%;
+		}
+
+		.cat-actions {
+			width: 100%;
+		}
+
+		.cat-actions .btn-small {
+			flex: 1;
+			justify-content: center;
+		}
+	}
 </style>

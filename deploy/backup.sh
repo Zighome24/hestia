@@ -4,6 +4,17 @@
 # Intended to be run daily via cron (see deploy/README.md).
 set -euo pipefail
 
+ENV_FILE="/var/lib/hestia/hestia.env"
+if [ -f "$ENV_FILE" ]; then
+  set -a
+  # shellcheck source=/dev/null
+  . "$ENV_FILE"
+  set +a
+else
+  echo "Error: $ENV_FILE not found" >&2
+  exit 1
+fi
+
 BACKUP_DIR="/var/lib/hestia/backups"
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 RETAIN_DAYS=7

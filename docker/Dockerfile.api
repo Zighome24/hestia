@@ -31,8 +31,12 @@ ENV SQLX_OFFLINE=true
 
 RUN cargo build --release
 
-# Stage 4: Runtime — minimal distroless image
-FROM gcr.io/distroless/cc-debian12
+# Stage 4: Runtime
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates wget libssl3 \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/target/release/hestia-api /usr/local/bin/hestia-api
 

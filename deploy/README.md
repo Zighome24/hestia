@@ -56,9 +56,20 @@ Edit `deploy/Caddyfile.prod` and replace `hestia.YOUR_TAILNET.ts.net` with your 
 tailscale status --self
 ```
 
-Then place the Caddyfile where your Caddy container image expects it (typically baked into the image at build time via `docker/Dockerfile.web`).
+Copy the production Caddyfile to the bind-mount location:
 
-### 4. Install quadlet files
+```bash
+cp deploy/Caddyfile.prod /var/lib/hestia/Caddyfile
+```
+
+### 4. Install backup script
+
+```bash
+cp deploy/backup.sh /var/lib/hestia/backup.sh
+chmod +x /var/lib/hestia/backup.sh
+```
+
+### 5. Install quadlet files
 
 Copy the quadlet files into Podman's systemd generator directory:
 
@@ -72,7 +83,7 @@ cp deploy/hestia-caddy.container /etc/containers/systemd/
 systemctl daemon-reload
 ```
 
-### 5. Pull images and start
+### 6. Pull images and start
 
 ```bash
 # Pull latest images
@@ -86,7 +97,7 @@ systemctl start hestia-caddy
 
 Systemd will start the dependency chain: postgres -> api -> caddy.
 
-### 6. Verify
+### 7. Verify
 
 ```bash
 systemctl status hestia-postgres hestia-api hestia-caddy
@@ -111,8 +122,6 @@ The `backup.sh` script dumps PostgreSQL and archives uploads, keeping 7 days of 
 ### Manual backup
 
 ```bash
-# Source the env file so the script has POSTGRES_USER and POSTGRES_DB
-set -a && source /var/lib/hestia/hestia.env && set +a
 bash deploy/backup.sh
 ```
 
@@ -121,7 +130,7 @@ bash deploy/backup.sh
 ```bash
 # Add a cron job (runs at 02:00 daily)
 cat > /etc/cron.d/hestia-backup << 'CRON'
-0 2 * * * root set -a && . /var/lib/hestia/hestia.env && /opt/hestia/deploy/backup.sh >> /var/log/hestia-backup.log 2>&1
+0 2 * * * root /var/lib/hestia/backup.sh >> /var/log/hestia-backup.log 2>&1
 CRON
 ```
 

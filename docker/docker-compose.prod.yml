@@ -28,7 +28,7 @@ services:
       - /var/lib/hestia/uploads:/uploads
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "/usr/local/bin/hestia-api", "healthcheck"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/api/health || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 3
@@ -43,6 +43,7 @@ services:
     volumes:
       - /var/lib/hestia/caddy/data:/data
       - /var/lib/hestia/caddy/config:/config
+      - /var/lib/hestia/Caddyfile:/etc/caddy/Caddyfile:ro
     depends_on:
       api:
         condition: service_healthy

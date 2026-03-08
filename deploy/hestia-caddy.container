@@ -11,6 +11,7 @@ PublishPort=443:443
 PublishPort=443:443/udp
 Volume=/var/lib/hestia/caddy/data:/data:Z
 Volume=/var/lib/hestia/caddy/config:/config:Z
+Volume=/var/lib/hestia/Caddyfile:/etc/caddy/Caddyfile:ro,Z
 
 [Service]
 Restart=always

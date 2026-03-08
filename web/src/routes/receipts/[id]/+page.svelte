@@ -3,6 +3,8 @@
 	import { page } from '$app/stores';
 	import { get, del } from '$lib/api';
 	import { goto } from '$app/navigation';
+	import Spinner from '$lib/components/Spinner.svelte';
+	import ErrorBanner from '$lib/components/ErrorBanner.svelte';
 
 	interface Category { id: string; name: string; color: string; }
 	interface Receipt {
@@ -59,9 +61,9 @@
 </script>
 
 {#if loading}
-	<p>Loading...</p>
+	<Spinner message="Loading receipt..." />
 {:else if error}
-	<p class="error" role="alert">{error}</p>
+	<ErrorBanner message={error} on:dismiss={() => (error = '')} />
 {:else if receipt}
 	<div class="detail-header">
 		<h1>{formatAmount(receipt.total_amount)}</h1>
@@ -120,7 +122,6 @@
 	.btn-danger { padding: 0.4rem 0.8rem; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 0.375rem; cursor: pointer; font-size: 0.9rem; min-height: 2.75rem; }
 	.btn-danger:hover { background: #fecaca; }
 	.back-link { display: inline-block; margin-top: 1.5rem; font-size: 0.9rem; }
-	.error { color: #dc2626; }
 
 	@media (max-width: 640px) {
 		.detail-row { flex-direction: column; gap: 0.25rem; }

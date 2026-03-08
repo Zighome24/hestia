@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import { get, post } from '$lib/api';
 	import { goto } from '$app/navigation';
+	import Spinner from '$lib/components/Spinner.svelte';
+	import ErrorBanner from '$lib/components/ErrorBanner.svelte';
 
 	interface Category { id: string; name: string; color: string; }
 	interface Card { id: string; nickname: string; last_four: string; }
@@ -90,9 +92,12 @@
 <h1>Add Receipt</h1>
 
 {#if error}
-	<p class="error" role="alert">{error}</p>
+	<ErrorBanner message={error} on:dismiss={() => (error = '')} />
 {/if}
 
+{#if loading}
+	<Spinner message="Loading form data..." />
+{:else}
 	<form class="receipt-form" on:submit={handleSubmit}>
 		<div class="field">
 			<label for="amount">Amount ($)</label>
@@ -148,6 +153,7 @@
 			{submitting ? 'Saving...' : 'Save Receipt'}
 		</button>
 	</form>
+{/if}
 
 <style>
 	h1 { margin-bottom: 1.5rem; }
@@ -176,8 +182,6 @@
 	}
 	.btn-primary:hover { background: #1d4ed8; }
 	.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-	.error { color: #dc2626; margin-bottom: 0.5rem; }
-
 	@media (max-width: 640px) {
 		.receipt-form { max-width: 100%; }
 	}
