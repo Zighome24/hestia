@@ -1,0 +1,21 @@
+[Unit]
+Description=Hestia PostgreSQL (pgvector)
+After=network-online.target
+
+[Container]
+ContainerName=hestia-postgres
+Image=docker.io/pgvector/pgvector:pg16
+Network=hestia.network
+EnvironmentFile=/var/lib/hestia/hestia.env
+Volume=/var/lib/hestia/postgres:/var/lib/postgresql/data:Z
+HealthCmd=pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+HealthInterval=10s
+HealthTimeout=5s
+HealthRetries=5
+
+[Service]
+Restart=always
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target default.target

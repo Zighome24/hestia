@@ -1,0 +1,25 @@
+{
+	admin off
+}
+
+# Replace "hestia.YOUR_TAILNET.ts.net" with your actual Tailscale machine name.
+# Caddy will automatically obtain a TLS certificate from Tailscale for this hostname.
+hestia.YOUR_TAILNET.ts.net {
+	tls {
+		get_certificate tailscale
+	}
+
+	# Serve static frontend
+	root * /srv
+	try_files {path} /200.html
+
+	# Proxy API requests to backend
+	handle /api/* {
+		reverse_proxy hestia-api:8080
+	}
+
+	# Serve static files with SPA fallback
+	handle {
+		file_server
+	}
+}

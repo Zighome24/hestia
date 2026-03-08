@@ -205,10 +205,10 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - [ ] Loading states and optimistic UI where appropriate
 - [ ] Docker production build (multi-stage Rust build, static frontend baked into Caddy image)
 - [ ] CI: build and push container images to `ghcr.io/Zighome24` on main branch
-- [ ] Podman quadlet files (`deploy/`) — `.container`, `.network` units for production
-- [ ] Caddy config with Tailscale HTTPS
+- [x] Podman quadlet files (`deploy/`) — `.container`, `.network` units for production
+- [x] Caddy config with Tailscale HTTPS
 - [ ] Deploy quadlets to Proxmox LXC, verify systemd starts all services on boot
-- [ ] Backup strategy for Postgres data and receipt photos (bind mounts under `/var/lib/hestia/`)
+- [x] Backup strategy for Postgres data and receipt photos (bind mounts under `/var/lib/hestia/`)
 
 ---
 

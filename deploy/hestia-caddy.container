@@ -1,0 +1,20 @@
+[Unit]
+Description=Hestia Caddy Reverse Proxy
+After=hestia-api.service
+
+[Container]
+ContainerName=hestia-caddy
+Image=ghcr.io/zighome24/hestia-caddy:latest
+Network=hestia.network
+PublishPort=80:80
+PublishPort=443:443
+PublishPort=443:443/udp
+Volume=/var/lib/hestia/caddy/data:/data:Z
+Volume=/var/lib/hestia/caddy/config:/config:Z
+
+[Service]
+Restart=always
+TimeoutStartSec=60
+
+[Install]
+WantedBy=multi-user.target default.target
