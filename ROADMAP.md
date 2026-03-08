@@ -200,11 +200,11 @@ The goal is a working app where both users can log in, upload receipt photos, re
 
 ### Milestone 1.5 — Polish & Deploy
 
-- [ ] Responsive design pass — ensure all views work well on phone
-- [ ] Error handling and user-friendly error messages
-- [ ] Loading states and optimistic UI where appropriate
-- [ ] Docker production build (multi-stage Rust build, static frontend baked into Caddy image)
-- [ ] CI: build and push container images to `ghcr.io/Zighome24` on main branch
+- [x] Responsive design pass — ensure all views work well on phone
+- [x] Error handling and user-friendly error messages
+- [x] Loading states and optimistic UI where appropriate
+- [x] Docker production build (multi-stage Rust build, static frontend baked into Caddy image)
+- [x] CI: build and push container images to `ghcr.io/Zighome24` on main branch
 - [x] Podman quadlet files (`deploy/`) — `.container`, `.network` units for production
 - [x] Caddy config with Tailscale HTTPS
 - [ ] Deploy quadlets to Proxmox LXC, verify systemd starts all services on boot
