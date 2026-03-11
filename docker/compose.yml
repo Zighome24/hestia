@@ -5,6 +5,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -17,13 +19,13 @@ services:
   api:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.api
+      dockerfile: docker/Containerfile.api
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      PORT: 8080
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PORT: 9069
       STORAGE_PATH: /uploads
       SESSION_SECRET: ${SESSION_SECRET}
     volumes:
@@ -33,7 +35,7 @@ services:
   caddy:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.web
+      dockerfile: docker/Containerfile.web
     ports:
       - "80:80"
       - "443:443"

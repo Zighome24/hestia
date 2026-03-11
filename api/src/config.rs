@@ -11,13 +11,14 @@ pub struct Config {
 
 impl Config {
     pub fn from_env() -> Result<Self> {
+        #[cfg(not(test))]
         dotenvy::dotenv().ok();
 
         let database_url = std::env::var("DATABASE_URL")
             .map_err(|_| anyhow::anyhow!("DATABASE_URL must be set"))?;
 
         let port = std::env::var("PORT")
-            .unwrap_or_else(|_| "8080".to_string())
+            .unwrap_or_else(|_| "9069".to_string())
             .parse::<u16>()
             .map_err(|_| anyhow::anyhow!("PORT must be a valid port number"))?;
 
@@ -39,65 +40,83 @@ impl Config {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env;
 
     #[test]
     fn test_from_env_with_all_vars() {
-        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
-        env::set_var("SESSION_SECRET", "test-secret-key");
-        env::set_var("PORT", "3000");
-        env::set_var("STORAGE_PATH", "/tmp/uploads");
-
-        let config = Config::from_env().unwrap();
-        assert_eq!(config.database_url, "postgres://test:test@localhost/test");
-        assert_eq!(config.session_secret, "test-secret-key");
-        assert_eq!(config.port, 3000);
-        assert_eq!(config.storage_path, "/tmp/uploads");
-
-        // Cleanup
-        env::remove_var("PORT");
-        env::remove_var("STORAGE_PATH");
+        temp_env::with_vars(
+            [
+                ("DATABASE_URL", Some("postgres://test:test@localhost/test")),
+                ("SESSION_SECRET", Some("test-secret-key")),
+                ("PORT", Some("3000")),
+                ("STORAGE_PATH", Some("/tmp/uploads")),
+            ],
+            || {
+                let config = Config::from_env().unwrap();
+                assert_eq!(config.database_url, "postgres://test:test@localhost/test");
+                assert_eq!(config.session_secret, "test-secret-key");
+                assert_eq!(config.port, 3000);
+                assert_eq!(config.storage_path, "/tmp/uploads");
+            },
+        );
     }
 
     #[test]
     fn test_from_env_defaults() {
-        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
-        env::set_var("SESSION_SECRET", "test-secret");
-        env::remove_var("PORT");
-        env::remove_var("STORAGE_PATH");
-
-        let config = Config::from_env().unwrap();
-        assert_eq!(config.port, 8080);
-        assert_eq!(config.storage_path, "./uploads");
+        temp_env::with_vars(
+            [
+                ("DATABASE_URL", Some("postgres://test:test@localhost/test")),
+                ("SESSION_SECRET", Some("test-secret")),
+                ("PORT", None),
+                ("STORAGE_PATH", None),
+            ],
+            || {
+                let config = Config::from_env().unwrap();
+                assert_eq!(config.port, 9069);
+                assert_eq!(config.storage_path, "./uploads");
+            },
+        );
     }
 
     #[test]
     fn test_from_env_missing_database_url() {
-        env::remove_var("DATABASE_URL");
-        env::set_var("SESSION_SECRET", "test-secret");
-
-        let result = Config::from_env();
-        assert!(result.is_err());
+        temp_env::with_vars(
+            [
+                ("DATABASE_URL", None),
+                ("SESSION_SECRET", Some("test-secret")),
+            ],
+            || {
+                let result = Config::from_env();
+                assert!(result.is_err());
+            },
+        );
     }
 
     #[test]
     fn test_from_env_missing_session_secret() {
-        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
-        env::remove_var("SESSION_SECRET");
-
-        let result = Config::from_env();
-        assert!(result.is_err());
+        temp_env::with_vars(
+            [
+                ("DATABASE_URL", Some("postgres://test:test@localhost/test")),
+                ("SESSION_SECRET", None),
+            ],
+            || {
+                let result = Config::from_env();
+                assert!(result.is_err());
+            },
+        );
     }
 
     #[test]
     fn test_from_env_invalid_port() {
-        env::set_var("DATABASE_URL", "postgres://test:test@localhost/test");
-        env::set_var("SESSION_SECRET", "test-secret");
-        env::set_var("PORT", "not_a_number");
-
-        let result = Config::from_env();
-        assert!(result.is_err());
-
-        env::remove_var("PORT");
+        temp_env::with_vars(
+            [
+                ("DATABASE_URL", Some("postgres://test:test@localhost/test")),
+                ("SESSION_SECRET", Some("test-secret")),
+                ("PORT", Some("not_a_number")),
+            ],
+            || {
+                let result = Config::from_env();
+                assert!(result.is_err());
+            },
+        );
     }
 }

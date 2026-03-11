@@ -9,21 +9,25 @@ default:
 
 # --- Development ---
 
-# Start the Postgres database via Docker Compose
+# Start the Postgres database via Podman Compose
 db:
-    docker compose -f docker/docker-compose.yml up -d postgres
+    podman compose -f docker/compose.yml up -d postgres
 
 # Stop the Postgres database
 db-stop:
-    docker compose -f docker/docker-compose.yml down
+    podman compose -f docker/compose.yml down
 
 # Run database migrations
 db-migrate:
     cd api && cargo sqlx migrate run
 
+# Drop and recreate the database, then re-run migrations
+db-reset:
+    cd api && cargo sqlx database drop -y && cargo sqlx database create && cargo sqlx migrate run
+
 # Start the API server (requires Postgres running)
 dev-api:
-    cd api && cargo run
+    cd api && cargo run --bin hestia-api
 
 # Start the SvelteKit dev server
 dev-web:
@@ -36,7 +40,7 @@ test: test-api test-web
 
 # Run Rust API tests
 test-api:
-    cd api && cargo test -- --test-threads=1
+    cd api && cargo test
 
 # Run SvelteKit frontend tests
 test-web:
@@ -71,23 +75,23 @@ build-api:
 build-web:
     cd web && npm run build
 
-# --- Docker (full stack) ---
+# --- Podman (full stack) ---
 
 # Build and start all containers
 up:
-    docker compose -f docker/docker-compose.yml up -d --build
+    podman compose -f docker/compose.yml up -d --build
 
 # Stop all containers
 down:
-    docker compose -f docker/docker-compose.yml down
+    podman compose -f docker/compose.yml down
 
 # View logs from all containers
 logs *args='':
-    docker compose -f docker/docker-compose.yml logs {{ args }}
+    podman compose -f docker/compose.yml logs {{ args }}
 
 # Rebuild and restart a specific service
 restart service:
-    docker compose -f docker/docker-compose.yml up -d --build {{ service }}
+    podman compose -f docker/compose.yml up -d --build {{ service }}
 
 # --- Setup ---
 

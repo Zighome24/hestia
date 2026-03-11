@@ -21,14 +21,14 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      PORT: 8080
+      PORT: 9069
       STORAGE_PATH: /uploads
       SESSION_SECRET: ${SESSION_SECRET}
     volumes:
       - /var/lib/hestia/uploads:/uploads
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/api/health || exit 1"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:9069/api/health || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 3

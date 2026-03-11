@@ -35,7 +35,7 @@ jobs:
         run: cargo clippy --manifest-path api/Cargo.toml -- -D warnings
 
       - name: cargo test
-        run: cargo test --manifest-path api/Cargo.toml
+        run: cargo test --manifest-path api/Cargo.toml --lib --bins
 
   web-build:
     runs-on: ubuntu-latest
@@ -98,7 +98,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker/Dockerfile.api
+          file: docker/Containerfile.api
           push: true
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}
@@ -118,7 +118,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker/Dockerfile.web
+          file: docker/Containerfile.web
           push: true
           tags: ${{ steps.meta-caddy.outputs.tags }}
           labels: ${{ steps.meta-caddy.outputs.labels }}

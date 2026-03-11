@@ -19,14 +19,14 @@
 	}
 
 	.spinner {
-		border: 3px solid #e5e7eb;
-		border-top-color: #2563eb;
+		border: 3px solid var(--color-spinner-border);
+		border-top-color: var(--color-primary);
 		border-radius: 50%;
 		animation: spin 0.7s linear infinite;
 	}
 
 	.spinner-text {
-		color: #6b7280;
+		color: var(--color-text-secondary);
 		font-size: 0.9rem;
 	}
 

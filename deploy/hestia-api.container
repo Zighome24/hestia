@@ -8,9 +8,9 @@ Image=ghcr.io/zighome24/hestia-api:latest
 Network=hestia.network
 EnvironmentFile=/var/lib/hestia/hestia.env
 Volume=/var/lib/hestia/uploads:/uploads:Z
-Environment=PORT=8080
+Environment=PORT=9069
 Environment=STORAGE_PATH=/uploads
-HealthCmd=wget -q --spider http://localhost:8080/api/health || exit 1
+HealthCmd=wget -q --spider http://localhost:9069/api/health || exit 1
 HealthInterval=15s
 HealthTimeout=5s
 HealthRetries=3

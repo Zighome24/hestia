@@ -8,7 +8,7 @@ This guide covers setting up and running Hestia locally for development.
 |------|---------|---------|
 | [Rust](https://rustup.rs/) | stable | Backend compilation |
 | [Node.js](https://nodejs.org/) | v20+ | Frontend build tooling |
-| [Docker](https://docs.docker.com/get-docker/) | Latest | Running PostgreSQL (and optionally the full stack) |
+| [Podman](https://podman.io/docs/installation) | Latest | Running PostgreSQL (and optionally the full stack) |
 | [just](https://github.com/casey/just) | Latest | Task runner (like `make` but simpler) |
 | [sqlx-cli](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli) | Latest | Database migrations (`cargo install sqlx-cli`) |
 
@@ -24,8 +24,8 @@ just setup
 
 This creates two `.env` files:
 
-- **`.env`** — used by Docker Compose (DB credentials, container environment)
-- **`api/.env`** — used by the API when running outside Docker (points to `localhost`)
+- **`.env`** — used by Podman Compose (DB credentials, container environment)
+- **`api/.env`** — used by the API when running outside containers (points to `localhost`)
 
 Review both files and set a real `SESSION_SECRET`:
 
@@ -36,11 +36,11 @@ openssl rand -hex 32
 
 ## Running Locally
 
-There are two ways to develop: **full Docker stack** or **individual services**.
+There are two ways to develop: **full Podman stack** or **individual services**.
 
-### Option A: Full Docker Stack (Recommended for Integration Testing)
+### Option A: Full Podman Stack (Recommended for Integration Testing)
 
-Runs Postgres, the API, and Caddy (serving the frontend) all in Docker:
+Runs Postgres, the API, and Caddy (serving the frontend) all in Podman:
 
 ```bash
 just up          # Build and start all containers
@@ -54,7 +54,7 @@ This is the closest to production. Caddy serves the built frontend and proxies `
 
 ### Option B: Individual Services (Recommended for Active Development)
 
-Run Postgres in Docker but the API and frontend natively for hot-reload:
+Run Postgres in Podman but the API and frontend natively for hot-reload:
 
 ```bash
 # Terminal 1 — Start Postgres
@@ -62,13 +62,13 @@ just db
 
 # Terminal 2 — Run database migrations, then start the API
 just db-migrate
-just dev-api     # Starts on http://localhost:8080
+just dev-api     # Starts on http://localhost:9069
 
 # Terminal 3 — Start the frontend dev server
 just dev-web     # Starts on http://localhost:5173
 ```
 
-**Important:** The frontend makes API calls to relative `/api` paths. In this setup, requests from the Vite dev server (`localhost:5173`) won't automatically reach the API on `localhost:8080`. You have two options:
+**Important:** The frontend makes API calls to relative `/api` paths. In this setup, requests from the Vite dev server (`localhost:5173`) won't automatically reach the API on `localhost:9069`. You have two options:
 
 1. **Add a Vite proxy** (recommended) — add this to `web/vite.config.ts`:
 
@@ -77,14 +77,14 @@ just dev-web     # Starts on http://localhost:5173
      plugins: [sveltekit()],
      server: {
        proxy: {
-         '/api': 'http://localhost:8080'
+         '/api': 'http://localhost:9069'
        }
      },
      // ... test config
    });
    ```
 
-2. **Use the Docker stack** for integration testing and the individual servers only for isolated API or frontend work.
+2. **Use the Podman stack** for integration testing and the individual servers only for isolated API or frontend work.
 
 ## Creating User Accounts
 
@@ -103,7 +103,7 @@ This requires Postgres to be running and migrations to have been applied.
 
 ### PostgreSQL
 
-Postgres 16 with the pgvector extension runs in Docker. The Docker Compose config exposes it on the default port `5432`.
+Postgres 16 with the pgvector extension runs in Podman. The compose config exposes it on the default port `5432`.
 
 ```bash
 just db           # Start Postgres container
@@ -124,8 +124,8 @@ Migrations run automatically when the API starts (via `sqlx::migrate!()` in `mai
 ### Connecting Directly
 
 ```bash
-# Via Docker
-docker exec -it hestia-postgres-1 psql -U hestia -d hestia
+# Via Podman
+podman exec -it hestia-postgres-1 psql -U hestia -d hestia
 
 # Or with psql if installed locally
 psql postgres://hestia:changeme@localhost:5432/hestia
@@ -139,7 +139,7 @@ The API uses sqlx compile-time query checking. If you need to build without a ru
 cd api && cargo sqlx prepare
 ```
 
-The Docker build uses `SQLX_OFFLINE=true` to avoid needing a database at build time.
+The container build uses `SQLX_OFFLINE=true` to avoid needing a database at build time.
 
 ## Testing
 
@@ -182,19 +182,19 @@ just build-web     # vite build (production static output)
 
 The frontend builds to `web/build/` as static files with a `200.html` fallback for SPA routing.
 
-## Docker Images
+## Container Images
 
 ### Building Locally
 
 ```bash
 # API image (multi-stage Rust build)
-docker build -f docker/Dockerfile.api -t hestia-api .
+podman build -f docker/Containerfile.api -t hestia-api .
 
 # Frontend + Caddy image
-docker build -f docker/Dockerfile.web -t hestia-caddy .
+podman build -f docker/Containerfile.web -t hestia-caddy .
 ```
 
-The API Dockerfile uses [cargo-chef](https://github.com/LukeMathWalker/cargo-chef) for efficient Docker layer caching — dependency builds are cached separately from application code.
+The API Containerfile uses [cargo-chef](https://github.com/LukeMathWalker/cargo-chef) for efficient layer caching — dependency builds are cached separately from application code.
 
 ### Image Architecture
 
@@ -208,7 +208,7 @@ The API Dockerfile uses [cargo-chef](https://github.com/LukeMathWalker/cargo-che
 Uploaded receipt photos are stored on the local filesystem:
 
 - **Development**: `api/uploads/` (relative to where the API runs)
-- **Docker**: `/uploads` volume mount
+- **Containers**: `/uploads` volume mount
 - **Production**: `/var/lib/hestia/uploads/` bind mount
 
 The storage path is configured via the `STORAGE_PATH` environment variable.
@@ -224,8 +224,8 @@ The justfile also sets `dotenv-load`, so environment variables from `.env` are a
 | `just` command | Shell equivalent | Description |
 |----------------|-----------------|-------------|
 | `just setup` | See note below | Install deps, create `.env` files |
-| `just db` | `docker compose -f docker/docker-compose.yml up -d postgres` | Start Postgres |
-| `just db-stop` | `docker compose -f docker/docker-compose.yml down` | Stop Postgres |
+| `just db` | `podman compose -f docker/compose.yml up -d postgres` | Start Postgres |
+| `just db-stop` | `podman compose -f docker/compose.yml down` | Stop Postgres |
 | `just db-migrate` | `cd api && cargo sqlx migrate run` | Run database migrations |
 | `just dev-api` | `cd api && cargo run` | Start the API server |
 | `just dev-web` | `cd web && npm run dev` | Start the SvelteKit dev server |
@@ -258,15 +258,15 @@ cd web && npm install
 | `just build-api` | `cd api && cargo build` | Build Rust API (debug) |
 | `just build-web` | `cd web && npm run build` | Build frontend (production) |
 
-### Docker (Full Stack)
+### Podman (Full Stack)
 
 | `just` command | Shell equivalent | Description |
 |----------------|-----------------|-------------|
-| `just up` | `docker compose -f docker/docker-compose.yml up -d --build` | Build and start all containers |
-| `just down` | `docker compose -f docker/docker-compose.yml down` | Stop all containers |
-| `just logs` | `docker compose -f docker/docker-compose.yml logs` | View container logs |
-| `just logs -f` | `docker compose -f docker/docker-compose.yml logs -f` | Follow container logs |
-| `just restart <svc>` | `docker compose -f docker/docker-compose.yml up -d --build <svc>` | Rebuild and restart a service |
+| `just up` | `podman compose -f docker/compose.yml up -d --build` | Build and start all containers |
+| `just down` | `podman compose -f docker/compose.yml down` | Stop all containers |
+| `just logs` | `podman compose -f docker/compose.yml logs` | View container logs |
+| `just logs -f` | `podman compose -f docker/compose.yml logs -f` | Follow container logs |
+| `just restart <svc>` | `podman compose -f docker/compose.yml up -d --build <svc>` | Rebuild and restart a service |
 
 ### Cleanup
 

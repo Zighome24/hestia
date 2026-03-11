@@ -226,21 +226,23 @@
 	label {
 		font-size: 0.8rem;
 		font-weight: 500;
-		color: #374151;
+		color: var(--color-text-label);
 	}
 
 	input {
 		padding: 0.5rem 0.6rem;
-		border: 1px solid #d1d5db;
+		border: 1px solid var(--color-border-input);
 		border-radius: 0.375rem;
 		font-size: 0.95rem;
 		min-height: 2.5rem;
+		background: var(--color-bg-card);
+		color: var(--color-text);
 	}
 
 	input:focus {
 		outline: none;
-		border-color: #2563eb;
-		box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+		border-color: var(--color-primary);
+		box-shadow: 0 0 0 2px var(--color-focus-shadow);
 	}
 
 	.card-list {
@@ -255,8 +257,8 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 0.75rem 1rem;
-		background: white;
-		border: 1px solid #e5e7eb;
+		background: var(--color-bg-card);
+		border: 1px solid var(--color-border);
 		border-radius: 0.5rem;
 		flex-wrap: wrap;
 		gap: 0.5rem;
@@ -269,7 +271,7 @@
 	}
 
 	.card-nickname { font-weight: 500; }
-	.card-digits { color: #6b7280; font-family: monospace; }
+	.card-digits { color: var(--color-text-secondary); font-family: monospace; }
 
 	.card-actions {
 		display: flex;
@@ -278,7 +280,7 @@
 
 	.btn-primary {
 		padding: 0.5rem 1rem;
-		background: #2563eb;
+		background: var(--color-primary);
 		color: white;
 		border: none;
 		border-radius: 0.375rem;
@@ -286,7 +288,7 @@
 		cursor: pointer;
 		min-height: 2.75rem;
 	}
-	.btn-primary:hover { background: #1d4ed8; }
+	.btn-primary:hover { background: var(--color-primary-hover); }
 	.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 	.btn-small {
@@ -296,12 +298,12 @@
 		cursor: pointer;
 		min-height: 2.75rem;
 	}
-	.btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
-	.btn-secondary:hover { background: #e5e7eb; }
-	.btn-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-	.btn-danger:hover { background: #fecaca; }
+	.btn-secondary { background: var(--color-bg-secondary); color: var(--color-text-label); border: 1px solid var(--color-border-input); }
+	.btn-secondary:hover { background: var(--color-bg-secondary-hover); }
+	.btn-danger { background: var(--color-danger-bg); color: var(--color-danger-text); border: 1px solid var(--color-danger-border); }
+	.btn-danger:hover { background: var(--color-danger-hover); }
 
-	.empty { color: #6b7280; font-style: italic; }
+	.empty { color: var(--color-text-secondary); font-style: italic; }
 
 	@media (max-width: 640px) {
 		.card-form {

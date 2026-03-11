@@ -21,10 +21,10 @@ pub fn router(storage: Arc<LocalStorage>) -> Router<PgPool> {
     Router::new()
         .route("/", get(list_receipts).post(create_receipt))
         .route(
-            "/{id}",
+            "/:id",
             get(get_receipt).put(update_receipt).delete(delete_receipt),
         )
-        .route("/{id}/photo", post(upload_photo).get(get_photo))
+        .route("/:id/photo", post(upload_photo).get(get_photo))
         .layer(Extension(storage))
 }
 

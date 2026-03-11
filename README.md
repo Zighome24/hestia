@@ -19,7 +19,7 @@ hestia/
 │   ├── migrations/  # sqlx database migrations
 │   └── tests/       # Integration tests
 ├── web/             # SvelteKit frontend (SPA)
-├── docker/          # Dockerfiles + docker-compose for local dev
+├── docker/          # Containerfiles + compose config for local dev
 ├── deploy/          # Production Podman quadlet files + backup script
 ├── Caddyfile        # Development reverse proxy config
 ├── justfile         # Task runner recipes
@@ -34,7 +34,7 @@ See the full [Development Guide](docs/development.md) for detailed setup instruc
 
 - [Rust](https://rustup.rs/) (stable)
 - [Node.js](https://nodejs.org/) (v20+)
-- [Docker](https://docs.docker.com/get-docker/) & Docker Compose (for Postgres)
+- [Podman](https://podman.io/docs/installation) & [podman-compose](https://github.com/containers/podman-compose) (for Postgres and local containers)
 - [just](https://github.com/casey/just) (command runner)
 
 ### Quick Start
@@ -54,7 +54,7 @@ just db-migrate
 just seed myuser "My Name" mypassword
 
 # 5. Start the API and frontend (in separate terminals)
-just dev-api    # API at http://localhost:8080
+just dev-api    # API at http://localhost:9069
 just dev-web    # Frontend at http://localhost:5173
 ```
 
@@ -67,10 +67,10 @@ Run `just` to see all available recipes. See the [Development Guide](docs/develo
 | Command | Description |
 |---------|-------------|
 | `just setup` | Install dependencies and create `.env` files from examples |
-| `just db` | Start Postgres via Docker Compose |
+| `just db` | Start Postgres via Podman Compose |
 | `just db-stop` | Stop Postgres |
 | `just db-migrate` | Run sqlx database migrations |
-| `just dev-api` | Start the Rust API server (port 8080) |
+| `just dev-api` | Start the Rust API server (port 9069) |
 | `just dev-web` | Start the SvelteKit dev server (port 5173) |
 | `just seed <user> <name> <pass>` | Create a user account |
 | `just test` | Run all tests (API + frontend) |
@@ -79,15 +79,15 @@ Run `just` to see all available recipes. See the [Development Guide](docs/develo
 | `just lint` | Run clippy + svelte-check |
 | `just check` | Run all checks (lint + build) |
 | `just build` | Build everything (API + frontend) |
-| `just up` | Build and start all Docker containers |
-| `just down` | Stop all Docker containers |
+| `just up` | Build and start all Podman containers |
+| `just down` | Stop all Podman containers |
 | `just logs` | View container logs (supports args, e.g. `just logs -f`) |
 | `just restart <service>` | Rebuild and restart a specific service |
 | `just clean` | Remove all build artifacts |
 
-### Full-Stack Docker (Local)
+### Full-Stack Podman (Local)
 
-To run the entire stack locally in Docker (Postgres + API + Caddy serving frontend):
+To run the entire stack locally in Podman (Postgres + API + Caddy serving frontend):
 
 ```bash
 # Build and start all containers
@@ -107,8 +107,8 @@ The application is configured via environment variables. Two `.env` files are us
 
 | File | Used By | Purpose |
 |------|---------|---------|
-| `.env` | Docker Compose | Container-level environment (DB credentials, etc.) |
-| `api/.env` | `just dev-api` | API server when running outside Docker |
+| `.env` | Podman Compose | Container-level environment (DB credentials, etc.) |
+| `api/.env` | `just dev-api` | API server when running outside containers |
 
 ### Environment Variables
 
@@ -116,11 +116,11 @@ The application is configured via environment variables. Two `.env` files are us
 |----------|----------|---------|-------------|
 | `DATABASE_URL` | Yes | — | PostgreSQL connection string |
 | `SESSION_SECRET` | Yes | — | Secret for signing session cookies (generate with `openssl rand -hex 32`) |
-| `PORT` | No | `8080` | API server listen port |
+| `PORT` | No | `9069` | API server listen port |
 | `STORAGE_PATH` | No | `./uploads` | Directory for uploaded receipt photos |
-| `POSTGRES_DB` | No | `hestia` | Database name (used by Docker Compose) |
-| `POSTGRES_USER` | No | `hestia` | Database user (used by Docker Compose) |
-| `POSTGRES_PASSWORD` | No | — | Database password (used by Docker Compose) |
+| `POSTGRES_DB` | No | `hestia` | Database name (used by Podman Compose) |
+| `POSTGRES_USER` | No | `hestia` | Database user (used by Podman Compose) |
+| `POSTGRES_PASSWORD` | No | — | Database password (used by Podman Compose) |
 
 ## Deployment
 
@@ -137,7 +137,7 @@ Tailscale Network
   └── Proxmox Host
        └── Debian LXC
             ├── Caddy (ports 80/443) ── Tailscale HTTPS certs
-            │   ├── /api/*  → hestia-api:8080
+            │   ├── /api/*  → hestia-api:9069
             │   └── /*      → static frontend files
             ├── hestia-api (Rust binary)
             └── PostgreSQL 16 + pgvector
@@ -191,7 +191,7 @@ GitHub Actions runs on every push and PR:
 
 1. **api-check** — `cargo check`, `cargo clippy`, `cargo test`
 2. **web-build** — `npm run check`, `vitest run`, `npm run build`
-3. **build-and-push** (main branch only) — builds Docker images and pushes to GHCR with `latest` + SHA tags
+3. **build-and-push** (main branch only) — builds container images and pushes to GHCR with `latest` + SHA tags
 
 ## License
 

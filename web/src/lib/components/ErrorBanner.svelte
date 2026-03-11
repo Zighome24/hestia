@@ -24,14 +24,14 @@
 		justify-content: space-between;
 		gap: 0.75rem;
 		padding: 0.75rem 1rem;
-		background: #fef2f2;
-		border: 1px solid #fca5a5;
+		background: var(--color-error-bg);
+		border: 1px solid var(--color-error-border);
 		border-radius: 0.5rem;
 		margin-bottom: 1rem;
 	}
 
 	.error-message {
-		color: #b91c1c;
+		color: var(--color-error-text);
 		font-size: 0.9rem;
 		line-height: 1.4;
 	}
@@ -39,7 +39,7 @@
 	.error-dismiss {
 		background: none;
 		border: none;
-		color: #b91c1c;
+		color: var(--color-error-text);
 		font-size: 1.25rem;
 		cursor: pointer;
 		padding: 0.25rem 0.5rem;
@@ -49,6 +49,6 @@
 	}
 
 	.error-dismiss:hover {
-		background: #fee2e2;
+		background: var(--color-error-hover);
 	}
 </style>

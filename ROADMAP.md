@@ -52,7 +52,7 @@ Hestia is a self-hosted family utility application. The long-term vision include
   - `postgres` — PostgreSQL 16 + pgvector extension
   - `caddy` — Reverse proxy + static frontend serving
 - **Data**: Bind mounts under `/var/lib/hestia/` (postgres, uploads, caddy) for straightforward backups
-- **Local dev**: Docker Compose (`docker/docker-compose.yml`) retained for local development and testing — works with both Docker and `podman compose`
+- **Local dev**: Podman Compose (`docker/compose.yml`) for local development and testing
 
 ### Security Considerations
 
@@ -124,9 +124,9 @@ hestia/
 │   ├── hestia-caddy.container
 │   └── hestia-api.env        # Production environment variables (not committed)
 ├── docker/                   # Local development
-│   ├── Dockerfile.api
-│   ├── Dockerfile.web        # Multi-stage: build + copy to Caddy
-│   └── docker-compose.yml
+│   ├── Containerfile.api
+│   ├── Containerfile.web     # Multi-stage: build + copy to Caddy
+│   └── compose.yml
 ├── Caddyfile
 └── ROADMAP.md
 ```
@@ -141,7 +141,7 @@ The goal is a working app where both users can log in, upload receipt photos, re
 
 - [x] Initialize Rust project with Axum, sqlx, tokio
 - [x] Initialize SvelteKit project with static adapter
-- [x] Docker Compose with Postgres, Caddy, API container
+- [x] Podman Compose with Postgres, Caddy, API container
 - [x] Basic health check endpoint (`GET /api/health`)
 - [x] Database connection and migration setup (pool + `sqlx::migrate!`; migration files added per milestone)
 - [x] CI: cargo check, cargo test, clippy, svelte check, svelte build
@@ -208,6 +208,7 @@ The goal is a working app where both users can log in, upload receipt photos, re
 - [x] Podman quadlet files (`deploy/`) — `.container`, `.network` units for production
 - [x] Caddy config with Tailscale HTTPS
 - [ ] Deploy quadlets to Proxmox LXC, verify systemd starts all services on boot
+- [ ] CI: add Postgres service container to run integration tests in GitHub Actions
 - [x] Backup strategy for Postgres data and receipt photos (bind mounts under `/var/lib/hestia/`)
 
 ---

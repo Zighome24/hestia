@@ -15,7 +15,7 @@ hestia.YOUR_TAILNET.ts.net {
 
 	# Proxy API requests to backend
 	handle /api/* {
-		reverse_proxy hestia-api:8080
+		reverse_proxy hestia-api:9069
 	}
 
 	# Serve static files with SPA fallback

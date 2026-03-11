@@ -13,7 +13,7 @@ use crate::models::card::{Card, CardResponse, CreateCardRequest, UpdateCardReque
 pub fn router() -> Router<PgPool> {
     Router::new()
         .route("/", get(list_cards).post(create_card))
-        .route("/{id}", get(get_card).put(update_card).delete(delete_card))
+        .route("/:id", get(get_card).put(update_card).delete(delete_card))
 }
 
 async fn list_cards(

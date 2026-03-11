@@ -159,28 +159,29 @@
 	h1 { margin-bottom: 1.5rem; }
 	.receipt-form { display: flex; flex-direction: column; gap: 1rem; max-width: 32rem; }
 	.field { display: flex; flex-direction: column; gap: 0.25rem; }
-	label { font-size: 0.875rem; font-weight: 500; color: #374151; }
+	label { font-size: 0.875rem; font-weight: 500; color: var(--color-text-label); }
 	input, select, textarea {
-		padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 1rem; width: 100%; min-height: 2.5rem;
+		padding: 0.5rem 0.75rem; border: 1px solid var(--color-border-input); border-radius: 0.375rem; font-size: 1rem; width: 100%; min-height: 2.5rem;
+		background: var(--color-bg-card); color: var(--color-text);
 	}
 	input:focus, select:focus, textarea:focus {
-		outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+		outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 2px var(--color-focus-shadow);
 	}
 	input[type="file"] { padding: 0.375rem; }
 	.category-picks { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 	.category-pick {
 		padding: 0.3rem 0.7rem; border-radius: 1rem; font-size: 0.85rem; cursor: pointer;
-		background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; transition: all 0.15s;
+		background: var(--color-bg-secondary); color: var(--color-text-label); border: 1px solid var(--color-border-input); transition: all 0.15s;
 	}
 	.category-pick.selected {
-		background: var(--cat-color, #2563eb); color: white; border-color: var(--cat-color, #2563eb);
+		background: var(--cat-color, var(--color-primary)); color: white; border-color: var(--cat-color, var(--color-primary));
 	}
 	.btn-primary {
-		margin-top: 0.5rem; padding: 0.625rem 1.25rem; background: #2563eb; color: white;
+		margin-top: 0.5rem; padding: 0.625rem 1.25rem; background: var(--color-primary); color: white;
 		border: none; border-radius: 0.375rem; font-size: 1rem; font-weight: 500; cursor: pointer;
 		min-height: 2.75rem; justify-content: center;
 	}
-	.btn-primary:hover { background: #1d4ed8; }
+	.btn-primary:hover { background: var(--color-primary-hover); }
 	.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 	@media (max-width: 640px) {
 		.receipt-form { max-width: 100%; }

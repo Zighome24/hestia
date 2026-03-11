@@ -131,27 +131,27 @@
 
 <style>
 	.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; gap: 0.75rem; flex-wrap: wrap; }
-	.btn-primary { padding: 0.5rem 1rem; background: #2563eb; color: white; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 500; min-height: 2.75rem; }
-	.btn-primary:hover { background: #1d4ed8; text-decoration: none; }
+	.btn-primary { padding: 0.5rem 1rem; background: var(--color-primary); color: white; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 500; min-height: 2.75rem; }
+	.btn-primary:hover { background: var(--color-primary-hover); text-decoration: none; }
 	.filters { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
-	select { padding: 0.4rem 0.6rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.9rem; min-height: 2.5rem; }
+	select { padding: 0.4rem 0.6rem; border: 1px solid var(--color-border-input); border-radius: 0.375rem; font-size: 0.9rem; min-height: 2.5rem; background: var(--color-bg-card); color: var(--color-text); }
 	.btn-small { padding: 0.4rem 0.75rem; font-size: 0.85rem; border-radius: 0.3rem; cursor: pointer; min-height: 2.75rem; }
-	.btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
-	.btn-secondary:hover { background: #e5e7eb; }
+	.btn-secondary { background: var(--color-bg-secondary); color: var(--color-text-label); border: 1px solid var(--color-border-input); }
+	.btn-secondary:hover { background: var(--color-bg-secondary-hover); }
 	.receipt-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-	.receipt-item { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+	.receipt-item { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 0.5rem; }
 	.receipt-link { display: block; padding: 0.75rem 1rem; color: inherit; text-decoration: none; min-height: unset; }
-	.receipt-link:hover { background: #f9fafb; text-decoration: none; }
+	.receipt-link:hover { background: var(--color-bg-card-hover); text-decoration: none; }
 	.receipt-main { display: flex; justify-content: space-between; align-items: center; }
-	.receipt-date { font-size: 0.9rem; color: #374151; }
-	.receipt-amount { font-size: 1.1rem; font-weight: 600; color: #111827; }
+	.receipt-date { font-size: 0.9rem; color: var(--color-text-label); }
+	.receipt-amount { font-size: 1.1rem; font-weight: 600; color: var(--color-text-heading); }
 	.receipt-meta { display: flex; gap: 0.5rem; margin-top: 0.25rem; }
-	.receipt-card { font-size: 0.8rem; color: #6b7280; }
-	.receipt-photo-badge { font-size: 0.75rem; background: #dbeafe; color: #2563eb; padding: 0.1rem 0.4rem; border-radius: 0.25rem; }
+	.receipt-card { font-size: 0.8rem; color: var(--color-text-secondary); }
+	.receipt-photo-badge { font-size: 0.75rem; background: var(--color-primary-badge); color: var(--color-primary); padding: 0.1rem 0.4rem; border-radius: 0.25rem; }
 	.receipt-categories { display: flex; gap: 0.35rem; margin-top: 0.35rem; flex-wrap: wrap; }
 	.category-badge { font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 1rem; }
-	.receipt-notes { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-	.empty { color: #6b7280; text-align: center; padding: 2rem 0; }
+	.receipt-notes { font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.empty { color: var(--color-text-secondary); text-align: center; padding: 2rem 0; }
 
 	@media (max-width: 640px) {
 		.filters { flex-direction: column; }

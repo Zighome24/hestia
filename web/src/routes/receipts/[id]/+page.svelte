@@ -112,15 +112,15 @@
 	.detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
 	h1 { font-size: 2rem; }
 	.photo-section { margin-bottom: 1.5rem; }
-	.receipt-photo { max-width: 100%; max-height: 400px; border-radius: 0.5rem; border: 1px solid #e5e7eb; }
+	.receipt-photo { max-width: 100%; max-height: 400px; border-radius: 0.5rem; border: 1px solid var(--color-border); }
 	.detail-fields { display: flex; flex-direction: column; gap: 0.75rem; }
 	.detail-row { display: flex; gap: 1rem; align-items: flex-start; }
-	.detail-label { font-size: 0.85rem; font-weight: 500; color: #6b7280; min-width: 6rem; }
-	.detail-value { color: #111827; }
+	.detail-label { font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); min-width: 6rem; }
+	.detail-value { color: var(--color-text-heading); }
 	.categories { display: flex; gap: 0.35rem; flex-wrap: wrap; }
 	.category-badge { font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 1rem; }
-	.btn-danger { padding: 0.4rem 0.8rem; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 0.375rem; cursor: pointer; font-size: 0.9rem; min-height: 2.75rem; }
-	.btn-danger:hover { background: #fecaca; }
+	.btn-danger { padding: 0.4rem 0.8rem; background: var(--color-danger-bg); color: var(--color-danger-text); border: 1px solid var(--color-danger-border); border-radius: 0.375rem; cursor: pointer; font-size: 0.9rem; min-height: 2.75rem; }
+	.btn-danger:hover { background: var(--color-danger-hover); }
 	.back-link { display: inline-block; margin-top: 1.5rem; font-size: 0.9rem; }
 
 	@media (max-width: 640px) {

@@ -383,10 +383,11 @@ async fn test_category_crud_and_receipt_assignment() {
     register_and_login(&base_url, &client).await;
 
     // --- Create two categories ---
+    let cat1_name = format!("Groceries_{}", &Uuid::new_v4().to_string()[..8]);
     let res = client
         .post(format!("{}/api/categories", base_url))
         .json(&json!({
-            "name": "Groceries",
+            "name": cat1_name,
             "color": "#00aa00"
         }))
         .send()
@@ -396,10 +397,11 @@ async fn test_category_crud_and_receipt_assignment() {
     let cat1: Value = res.json().await.unwrap();
     let cat1_id = cat1["id"].as_str().expect("category id should be a string");
 
+    let cat2_name = format!("Dining_{}", &Uuid::new_v4().to_string()[..8]);
     let res = client
         .post(format!("{}/api/categories", base_url))
         .json(&json!({
-            "name": "Dining",
+            "name": cat2_name,
             "color": "#ff5500"
         }))
         .send()
@@ -546,10 +548,11 @@ async fn test_category_crud_lifecycle() {
     register_and_login(&base_url, &client).await;
 
     // Create a category
+    let cat_name = format!("Electronics_{}", &Uuid::new_v4().to_string()[..8]);
     let res = client
         .post(format!("{}/api/categories", base_url))
         .json(&json!({
-            "name": "Electronics",
+            "name": cat_name,
             "color": "#3b82f6"
         }))
         .send()
@@ -557,7 +560,7 @@ async fn test_category_crud_lifecycle() {
         .unwrap();
     assert_eq!(res.status(), 200);
     let cat: Value = res.json().await.unwrap();
-    assert_eq!(cat["name"], "Electronics");
+    assert_eq!(cat["name"], cat_name);
     assert_eq!(cat["color"], "#3b82f6");
     let cat_id = cat["id"].as_str().expect("category id");
 
@@ -579,13 +582,14 @@ async fn test_category_crud_lifecycle() {
         .unwrap();
     assert_eq!(res.status(), 200);
     let fetched: Value = res.json().await.unwrap();
-    assert_eq!(fetched["name"], "Electronics");
+    assert_eq!(fetched["name"], cat_name);
 
     // Update category
+    let updated_name = format!("Tech_{}", &Uuid::new_v4().to_string()[..8]);
     let res = client
         .put(format!("{}/api/categories/{}", base_url, cat_id))
         .json(&json!({
-            "name": "Tech",
+            "name": updated_name,
             "color": "#ef4444"
         }))
         .send()
@@ -593,7 +597,7 @@ async fn test_category_crud_lifecycle() {
         .unwrap();
     assert_eq!(res.status(), 200);
     let updated: Value = res.json().await.unwrap();
-    assert_eq!(updated["name"], "Tech");
+    assert_eq!(updated["name"], updated_name);
     assert_eq!(updated["color"], "#ef4444");
 
     // Delete category
